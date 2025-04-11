@@ -10,6 +10,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 How to install:
-```console
+```bash
 pip install git+https://github.com/marksverdhei/python-template.git
 ```
