@@ -1,5 +1,7 @@
+from pydantic import BaseModel
 
-
+class CLIArgs(BaseModel):
+    pass
 def parse_args():
     return {}
 

@@ -9,3 +9,7 @@ This project uses [`uv`](https://github.com/astral-sh/uv)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+How to install:
+```console
+pip install git+https://github.com/marksverdhei/python-template.git
+```
