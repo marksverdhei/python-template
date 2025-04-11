@@ -1,0 +1,4 @@
+
+
+class CLIArgs(BaseModel):
+    pass

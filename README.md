@@ -1,5 +1,7 @@
 # python-template
 
+`ctrl+F python-template`, replace with your name.  
+
 This project uses [`uv`](https://github.com/astral-sh/uv)
 
 ```bash
