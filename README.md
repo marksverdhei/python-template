@@ -1,6 +1,9 @@
 # python-template
 
 `ctrl+F python-template`, replace with your name.  
+`ctrl+F python_template`, replace with your name.  
+Rename all dirs with python + template after that.
+
 
 This project uses [`uv`](https://github.com/astral-sh/uv)
 
