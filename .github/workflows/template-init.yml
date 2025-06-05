@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main  # runs after the very first push that creates the repo
-
+      - add-init-workflow
 jobs:
   init:
     # Do not run in the original template repository itself
