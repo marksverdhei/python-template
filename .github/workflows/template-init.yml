@@ -1,0 +1,89 @@
+# .github/workflows/template-init.yml
+
+name: Template initialisation
+
+on:
+  push:
+    branches:
+      - main  # runs after the very first push that creates the repo
+jobs:
+  init:
+    # Do not run in the original template repository itself
+    if: github.event.repository.name != 'python-template'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Derive project‑specific names
+        id: names
+        run: |
+          echo "repo_slug=${{ github.event.repository.name }}" >> "$GITHUB_OUTPUT"
+          snake=$(echo "${{ github.event.repository.name }}" | tr '-' '_')
+          echo "repo_snake=$snake" >> "$GITHUB_OUTPUT"
+
+      - name: Create working branch
+        run: git switch -c template-init
+
+      - name: Replace placeholders inside files
+        run: |
+          repo_slug="${{ steps.names.outputs.repo_slug }}"
+          repo_snake="${{ steps.names.outputs.repo_snake }}"
+
+          # replace dash-style placeholder
+          grep -lr --exclude-dir=.git 'python-template' . | xargs -r sed -i "s/python-template/${repo_slug}/g"
+          # replace snake_case placeholder
+          grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
+
+      - name: Rename files and directories
+        run: |
+          repo_slug="${{ steps.names.outputs.repo_slug }}"
+          repo_snake="${{ steps.names.outputs.repo_snake }}"
+
+          # function to rename safely preserving path depth
+          rename_path() {
+            old_path="$1"; new_path="$2";
+            mkdir -p "$(dirname "$new_path")"
+            git mv "$old_path" "$new_path"
+          }
+
+          export -f rename_path
+
+          # dash‑style paths
+          find . -depth -name '*python-template*' -print0 | while IFS= read -r -d '' f; do
+            rename_path "$f" "${f//python-template/$repo_slug}";
+          done
+
+          # snake_case paths
+          find . -depth -name '*python_template*' -print0 | while IFS= read -r -d '' f; do
+            rename_path "$f" "${f//python_template/$repo_snake}";
+          done
+
+      - name: Remove this workflow so it never runs again
+        run: git rm -f .github/workflows/template-init.yml
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git commit -m "chore: initialize project from template" || echo "Nothing to commit"
+
+      - name: Push branch
+        run: git push -u origin template-init
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --title "Initialize project from template" \
+            --body "Automated placeholder replacement, path renames, and self‑cleanup." \
+            --base ${{ github.ref }} \
+            --head template-init \
