@@ -3,9 +3,6 @@ name = "python-template"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "marksverdhei", email = "marksverdhei@hotmail.com" }
-]
 requires-python = ">=3.12"
 dependencies = []
 
@@ -18,7 +15,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ipykernel>=6.29.5",
     "ipython>=9.1.0",
     "pytest>=8.3.5",
     "ruff>=0.11.4",

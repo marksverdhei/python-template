@@ -15,7 +15,7 @@ cd python-template
 
 Then install project with
 ```
-uv sync
+uv sync --dev
 source .venv/bin/activate
 ```
 
