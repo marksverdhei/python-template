@@ -7,12 +7,10 @@ authors = [
     { name = "marksverdhei", email = "marksverdhei@hotmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = [
-    "pydantic>=2.11.3",
-]
+dependencies = []
 
 [project.scripts]
-python_template = "python_template:cli.main"
+python-template = "python_template:cli.main"
 
 [build-system]
 requires = ["hatchling"]

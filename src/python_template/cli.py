@@ -1,17 +1,6 @@
-from pydantic import BaseModel
-
-
-class CLIArgs(BaseModel):
-    pass
-
-
-def parse_args():
-    return {}
-
 
 def main():
-    args = parse_args()
-    print("Your args are:", args)
+    print("Hello from python-template")
 
 
 if __name__ == "__main__":
