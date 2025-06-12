@@ -26,7 +26,7 @@ jobs:
         id: names
         run: |
           echo "repo_slug=${{ github.event.repository.name }}-test" >> "$GITHUB_OUTPUT"
-          snake=$(echo "${{ github.event.repository.name }}" | tr '-' '_')
+          snake=$(echo "${{ github.event.repository.name }}-test" | tr '-' '_')
           echo "repo_snake=$snake" >> "$GITHUB_OUTPUT"
 
       - name: Create working branch
