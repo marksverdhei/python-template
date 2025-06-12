@@ -65,13 +65,14 @@ jobs:
           find . -depth -name '*python_template*' -print0 | while IFS= read -r -d '' f; do
             rename_path "$f" "${f//python_template/$repo_snake}";
           done
-          git status
 
       - name: Remove this workflow so it never runs again
         run: git rm -f .github/workflows/template-init.yml
 
       - name: Commit changes
         run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add -u
           git commit -m "chore: initialize project from template" || echo "Nothing to commit"
 
