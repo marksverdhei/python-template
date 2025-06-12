@@ -10,7 +10,7 @@ on:
 jobs:
   init:
     # Do not run in the original template repository itself
-    # if: github.event.repository.name != 'python-template'
+    if: github.event.repository.name != 'python-template'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -25,8 +25,8 @@ jobs:
       - name: Derive project‑specific names
         id: names
         run: |
-          echo "repo_slug=${{ github.event.repository.name }}-test" >> "$GITHUB_OUTPUT"
-          snake=$(echo "${{ github.event.repository.name }}-test" | tr '-' '_')
+          echo "repo_slug=${{ github.event.repository.name }}" >> "$GITHUB_OUTPUT"
+          snake=$(echo "${{ github.event.repository.name }}" | tr '-' '_')
           echo "repo_snake=$snake" >> "$GITHUB_OUTPUT"
 
       - name: Create working branch
