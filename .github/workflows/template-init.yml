@@ -86,4 +86,3 @@ jobs:
             --body "Automated placeholder replacement, path renames, and self‑cleanup." \
             --base main \
             --head template-init \
-            --label automation
