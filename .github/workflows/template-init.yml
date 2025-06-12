@@ -76,7 +76,7 @@ jobs:
           git commit -m "chore: initialize project from template" || echo "Nothing to commit"
 
       - name: Push branch
-        run: git push -u origin template-init
+        run: git push -f origin template-init
 
       - name: Create pull request
         env:
