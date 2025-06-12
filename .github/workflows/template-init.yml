@@ -25,7 +25,7 @@ jobs:
       - name: Derive project‑specific names
         id: names
         run: |
-          echo "repo_slug=${{ github.event.repository.name }}" >> "$GITHUB_OUTPUT"
+          echo "repo_slug=${{ github.event.repository.name }}-test" >> "$GITHUB_OUTPUT"
           snake=$(echo "${{ github.event.repository.name }}" | tr '-' '_')
           echo "repo_snake=$snake" >> "$GITHUB_OUTPUT"
 
