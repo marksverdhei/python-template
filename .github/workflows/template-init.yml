@@ -32,18 +32,22 @@ jobs:
       - name: Create working branch
         run: git switch -c template-init
 
+      - name: Replace repo owner
+        if: ${{ github.event.repository.owner.login }} != marksverdhei
+        run: |
+          repo_owner="${{ steps.names.outputs.repo_owner }}"
+          # replace repo owner placeholder
+          grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}/g"
+
       - name: Replace placeholders inside files
         run: |
           repo_slug="${{ steps.names.outputs.repo_slug }}"
           repo_snake="${{ steps.names.outputs.repo_snake }}"
-          repo_owner="${{ steps.names.outputs.repo_owner }}"
 
           # replace dash-style placeholder
           grep -lr --exclude-dir=.git 'python-template' . | xargs -r sed -i "s/python-template/${repo_slug}/g"
           # replace snake_case placeholder
           grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
-          # replace repo owner placeholder
-          grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}/g"
 
       - name: Rename files and directories
         run: |
