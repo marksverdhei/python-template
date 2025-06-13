@@ -5,11 +5,12 @@ name: Template initialisation
 on:
   push:
     branches:
-      - main  # runs after the very first push that creates the repo
+      - main  # runs after the very first push that creates the repository
+      - replace-repo-owner
 jobs:
   init:
     # Do not run in the original template repository itself
-    if: github.event.repository.name != 'python-template'
+    # if: github.event.repository.name != 'python-template'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -33,6 +34,7 @@ jobs:
         run: git switch -c template-init
 
       - name: Replace placeholders inside files
+        continue-on-error: true
         run: |
           repo_slug="${{ steps.names.outputs.repo_slug }}"
           repo_snake="${{ steps.names.outputs.repo_snake }}"
@@ -44,8 +46,9 @@ jobs:
           grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
           # replace repo owner placeholder
           grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}/g"
-
+        
       - name: Rename files and directories
+        continue-on-error: true
         run: |
           repo_slug="${{ steps.names.outputs.repo_slug }}"
           repo_snake="${{ steps.names.outputs.repo_snake }}"
