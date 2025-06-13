@@ -45,7 +45,7 @@ jobs:
           # replace snake_case placeholder
           grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
           # replace repo owner placeholder
-          grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}/g"
+          grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}123/g"
         
       - name: Rename files and directories
         continue-on-error: true
