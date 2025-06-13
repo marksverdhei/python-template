@@ -9,7 +9,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 To get started with the project:
 
 ```
-git clone https://github.com/marksverdhei/python-template.git
+git clone https://github.com/marksverdhei123/python-template.git
 cd python-template
 ```
 
@@ -33,5 +33,5 @@ Hello from python-template
 
 How to install:
 ```bash
-pip install git+https://github.com/marksverdhei/python-template.git
+pip install git+https://github.com/marksverdhei123/python-template.git
 ```
