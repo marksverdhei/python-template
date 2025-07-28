@@ -1,11 +1,10 @@
-# .github/workflows/template-init.yml
-
 name: Template initialisation
 
 on:
   push:
     branches:
       - main  # runs after the very first push that creates the repo
+
 jobs:
   init:
     # Do not run in the original template repository itself
@@ -14,6 +13,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout repository
@@ -87,11 +87,51 @@ jobs:
         run: git push -f origin template-init
 
       - name: Create pull request
+        id: create_pr
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          issue_title="Grant GitHub Actions permission to create pull requests"
+          # look for an open issue with that exact title
+          issue_num=$(gh issue list --state open --search "in:title \"$issue_title\"" --json number --jq '.[0].number')
+
+          # Base PR body text
+          pr_body=$'Automated placeholder replacement, path renames, and self‑cleanup.'
+
+          # Append closing reference if the issue exists
+          if [ -n "$issue_num" ]; then
+            pr_body+=$' Fixes #'"$issue_num"
+          fi
+
+          # Create the PR
           gh pr create \
             --title "Initialize project from template" \
-            --body "Automated placeholder replacement, path renames, and self‑cleanup." \
+            --body "$pr_body" \
             --base ${{ github.ref }} \
-            --head template-init \
+            --head template-init
+
+      - name: Create issue to grant PR permissions (if missing)
+        if: steps.create_pr.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          issue_title="Grant GitHub Actions permission to create pull requests"
+          # Does an open issue with this exact title already exist?
+          existing=$(gh issue list --state open --search "in:title \"$issue_title\"" --json number --jq '.[0].number')
+          if [ -z "$existing" ]; then
+            echo "Creating new issue: $issue_title"
+            gh issue create \
+              --title "$issue_title" \
+              --body $'The workflow attempted to create a pull request but failed with the following error:\n\n```\npull request create failed: GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)\n```\n\nPlease grant the required permission by visiting the following link:\n\nhttps://github.com/${{ github.repository }}/settings/actions\n\nThen, in **Actions → General → Workflow permissions**, choose **Read and write permissions** (and optionally **Allow GitHub Actions to create and approve pull requests**).\n![Screenshot of checkbox](https://github.com/user-attachments/assets/cac2626e-bace-4f97-99b4-529331218ee6)\nAfter updating the setting, re‑run the workflow to complete the project initialisation.' \
+              --label "actions-feedback, automation"
+          else
+            echo "Issue #$existing already exists – skipping creation."
+          fi
+
+      - name: Fail workflow because PR could not be created
+        if: steps.create_pr.outcome == 'failure'
+        run: |
+          echo "Failing workflow due to failed PR creation. Please grant the required permissions and re-run." >&2
+          exit 1
