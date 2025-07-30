@@ -124,8 +124,7 @@ jobs:
             echo "Creating new issue: $issue_title"
             gh issue create \
               --title "$issue_title" \
-              --body $'The workflow attempted to create a pull request but failed with the following error:\n\n```\npull request create failed: GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)\n```\n\nPlease grant the required permission by visiting the following link:\n\nhttps://github.com/${{ github.repository }}/settings/actions\n\nThen, in **Actions → General → Workflow permissions**, choose **Read and write permissions** (and optionally **Allow GitHub Actions to create and approve pull requests**).\n![Screenshot of checkbox](https://github.com/user-attachments/assets/cac2626e-bace-4f97-99b4-529331218ee6)\nAfter updating the setting, re‑run the workflow to complete the project initialisation.' \
-              --label "actions-feedback, automation"
+              --body $'The workflow attempted to create a pull request but failed with the following error:\n\n```\npull request create failed: GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)\n```\n\nPlease grant the required permission by visiting the following link:\n\nhttps://github.com/${{ github.repository }}/settings/actions\n\nThen, in **Actions → General → Workflow permissions**, choose **Read and write permissions** (and optionally **Allow GitHub Actions to create and approve pull requests**).\n![Screenshot of checkbox](https://github.com/user-attachments/assets/cac2626e-bace-4f97-99b4-529331218ee6)\nAfter updating the setting, re‑run the workflow to complete the project initialisation.'
           else
             echo "Issue #$existing already exists – skipping creation."
           fi
