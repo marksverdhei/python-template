@@ -1,6 +1,6 @@
 # python-template
 
-This project uses [`uv`](https://github.com/astral-sh/uv), which can be installed in one line: 
+This project uses [`uv`](https://github.com/astral-sh/uv), which can be installed in one line:
 ```bash
 # On macOS and Linux.
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -19,7 +19,7 @@ uv sync --dev
 source .venv/bin/activate
 ```
 
-For development, make sure to install the project with the `-e` flag 
+For development, make sure to install the project with the `-e` flag
 so the source code isn't distributed to `.venv`:
 ```
 uv pip install -e .
