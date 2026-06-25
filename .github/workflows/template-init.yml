@@ -40,21 +40,33 @@ jobs:
           grep -lr --exclude-dir=.git 'marksverdhei' . | xargs -r sed -i "s/marksverdhei/${repo_owner}/g"
 
       - name: Replace placeholders inside files
+        env:
+          REPO_DESC: ${{ github.event.repository.description }}
         run: |
           repo_slug="${{ steps.names.outputs.repo_slug }}"
           repo_snake="${{ steps.names.outputs.repo_snake }}"
-          repo_desc="${{ github.event.repository.description }}"
 
           # replace dash-style placeholder
           grep -lr --exclude-dir=.git 'python-template' . | xargs -r sed -i "s/python-template/${repo_slug}/g"
           # replace snake_case placeholder
           grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
           # replace pyproject.toml description placeholder
-          if [ -n "$repo_desc" ]; then
-            sed -i "s/Add your description here/${repo_desc}/" pyproject.toml
-          else
-            sed -i '/^description = "Add your description here"/d' pyproject.toml
-          fi
+          # Done in Python so arbitrary characters in the description (slashes,
+          # quotes, shell metachars) can't break sed parsing or shell parsing.
+          python3 - <<'PY'
+          import os, pathlib
+          path = pathlib.Path("pyproject.toml")
+          text = path.read_text()
+          desc = os.environ.get("REPO_DESC", "")
+          if desc:
+              text = text.replace("Add your description here", desc, 1)
+          else:
+              text = "\n".join(
+                  line for line in text.splitlines()
+                  if line.strip() != 'description = "Add your description here"'
+              ) + "\n"
+          path.write_text(text)
+          PY
 
       - name: Rename files and directories
         run: |
