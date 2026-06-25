@@ -43,11 +43,18 @@ jobs:
         run: |
           repo_slug="${{ steps.names.outputs.repo_slug }}"
           repo_snake="${{ steps.names.outputs.repo_snake }}"
+          repo_desc="${{ github.event.repository.description }}"
 
           # replace dash-style placeholder
           grep -lr --exclude-dir=.git 'python-template' . | xargs -r sed -i "s/python-template/${repo_slug}/g"
           # replace snake_case placeholder
           grep -lr --exclude-dir=.git 'python_template' . | xargs -r sed -i "s/python_template/${repo_snake}/g"
+          # replace pyproject.toml description placeholder
+          if [ -n "$repo_desc" ]; then
+            sed -i "s/Add your description here/${repo_desc}/" pyproject.toml
+          else
+            sed -i '/^description = "Add your description here"/d' pyproject.toml
+          fi
 
       - name: Rename files and directories
         run: |
