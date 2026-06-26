@@ -33,7 +33,13 @@ jobs:
         run: git switch -c template-init
 
       - name: Replace repo owner
-        if: ${{ github.event.repository.owner.login }} != marksverdhei
+        # The previous form `${{ ... }} != marksverdhei` pre-substituted only the
+        # left side, leaving GHA to evaluate `<owner_login> != marksverdhei` as
+        # an expression — both unquoted identifiers resolved to null context
+        # refs, so `null != null` was always false and this step was *always
+        # skipped*. New repos kept marksverdhei references unreplaced. The
+        # comparison has to live entirely inside one expression scope.
+        if: github.event.repository.owner.login != 'marksverdhei'
         run: |
           repo_owner="${{ steps.names.outputs.repo_owner }}"
           # replace repo owner placeholder
